@@ -1,6 +1,6 @@
 {
   "instructionName": "use-finchip-cli",
-  "instructionVersion": "0.2.1",
+  "instructionVersion": "0.2.2",
   "validatedCliVersions": [
     "0.4.0",
     "0.4.1"

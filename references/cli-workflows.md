@@ -2,27 +2,20 @@
 
 ## Identity and wallet
 
-Use an Agent-specific, low-balance EOA:
+Start wallet onboarding with:
 
 ```bash
-finchip wallet create --json
 finchip wallet status --json
-finchip login --json
 ```
 
-Do not use a user's primary wallet. Do not inspect a key file. If `wallet use`
-selects an existing key file, use its actual path outside project repositories.
-When that wallet differs from the logged-in wallet, the CLI logs out the old
-session; log in again with the selected wallet.
+When no wallet is configured, ask once before creating one and tell the user:
 
-FinChip verifies wallet ownership, balances, command inputs, and applicable
-on-chain state. It does not verify the purpose or scope of a human-Agent
-delegation.
+> Some FinChip actions require a wallet. Please do not use your primary wallet.
+> I can create a separate wallet locally for me as the Agent and give you its
+> public address; fund it only with a small amount, or only when needed.
 
-### Disclose the wallet boundary before funding
-
-After creating an Agent wallet, show its public address and explain the
-following before asking the user to fund it:
+After approval, run `finchip wallet create --json`, show the public address, and
+explain the following before asking the user to fund it:
 
 - This is a separate, low-balance wallet created for the Agent. It is not the
   user's personal or treasury wallet.
@@ -38,6 +31,26 @@ following before asking the user to fund it:
 - To withdraw authorization, stop funding the wallet. Moving remaining funds
   requires a separate, explicitly reviewed transfer; FinChip CLI has no
   delegation or revocation control.
+
+Do not repeat this onboarding disclosure when a wallet is already configured.
+Do not inspect a key file. If `wallet use` selects an existing key file, use its
+actual path outside project repositories.
+
+For an operation that requires a Site session, run `finchip status --json`.
+Reuse an active session when its wallet matches the selected wallet; do not run
+`finchip login` again. When the session is missing or expired, state the
+selected wallet address and Site origin, confirm the wallet if it was not
+already established with the user, then run `finchip login --json`. A wallet
+switch logs out a session for a different wallet; never silently choose between
+accounts.
+
+`acquire` requires the selected wallet but not a Site login. Publishing and
+authenticated creator or review operations require both the selected wallet and
+a matching Site session.
+
+FinChip verifies wallet ownership, balances, command inputs, and applicable
+on-chain state. It does not verify the purpose or scope of a human-Agent
+delegation.
 
 ## Consumer flow
 
