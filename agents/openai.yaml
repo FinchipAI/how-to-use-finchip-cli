@@ -1,0 +1,4 @@
+interface:
+  display_name: "Use FinChip CLI"
+  short_description: "Safely publish, acquire, and manage FinChip Skills"
+  default_prompt: "Use $use-finchip-cli to help me complete this FinChip CLI workflow safely."
