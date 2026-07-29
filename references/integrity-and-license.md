@@ -11,6 +11,46 @@
 Integrity is not a malware or quality verdict. Send downloaded content through
 an appropriate host security-review capability before use or installation.
 
+## Verify and explain Creator Attestation
+
+For stronger provenance, use read-only EVM/RPC tooling against the exact
+`chainId` and `contractAddr` returned for the downloaded deployment. Read:
+
+- `creatorSignatureSet()` to determine whether an attestation exists.
+- `isCreatorVerified()` to verify that the stored signature belongs to the
+  immutable `genesisCreator` and matches this Chip, slug, and `contentHash`.
+
+Only describe the Creator Attestation as verified when
+`isCreatorVerified() === true`. If these functions are absent, report that the
+legacy contract does not support Creator Attestation; do not call it unsigned
+or failed.
+
+When Creator Attestation is verified and
+`integrityLevel` is `manifest-and-artifact-hashes`, explain the result to the
+user in plain language:
+
+> The creator's wallet signed the on-chain commitment for this Skill, and the
+> CLI locally matched the manifest, downloaded package, and decrypted content
+> to that commitment. This is the content the creator confirmed at publication.
+> FinChip or an IPFS gateway could withhold the file or return incorrect bytes,
+> but could not silently replace it with different content that still passes
+> these checks.
+
+When the independent hash chain passes but Creator Attestation is not verified,
+say:
+
+> The downloaded content matches the commitment recorded when this Skill was
+> published, so it was not silently replaced during download. This result alone
+> does not prove that the creator personally signed that commitment.
+
+These are decentralized integrity checks because the commitment is read from
+the deployed contract and the hashes are recomputed locally instead of trusting
+the Site's copy. Do not use either statement for `aead-only` or
+`transport-only` downloads.
+
+Always add that provenance and integrity do not prove that the Skill is safe,
+correct, high quality, or free of malicious behavior.
+
 ## Independently calculate the saved file hash
 
 For a byte-for-byte plaintext comparison, download with `--no-provenance` and

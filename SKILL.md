@@ -9,6 +9,17 @@ Use `finchip-cli` as an Agent-first interface to FinChip. Keep FinChip-specific
 identity, transaction, integrity, publishing, and review rules distinct from the
 behavior of a Skill bought or downloaded through the platform.
 
+## Install or upgrade the CLI
+
+When `finchip --version` is unavailable or below the supported range, verify
+that Node.js 22 or newer is installed, then obtain approval for the global
+install and run:
+
+```bash
+npm install --global finchip-cli
+finchip --version
+```
+
 ## Check compatibility first
 
 Read `references/compatibility.json`, then run:
