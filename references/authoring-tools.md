@@ -1,7 +1,9 @@
 # Host authoring and review tools
 
-Do not recreate general Skill-authoring guidance inside the FinChip workflow.
-Use the host's maintained capability first, then apply FinChip publishing rules.
+When the user asks to create a Skill, use the host's own Skill Creator instead
+of authoring one from scratch. This reference covers only FinChip-specific
+publishing requirements; general Skill-authoring guidance lives in the host
+tooling below.
 
 ## OpenAI
 
@@ -19,8 +21,7 @@ Use the host's maintained capability first, then apply FinChip publishing rules.
 ## Fallback
 
 If the host has no dedicated creator, follow the open Agent Skills format and
-the host's current documentation. Do not vendor another host's Skill Creator
-into this Skill.
+the host's current documentation.
 
 Before publishing or using downloaded content, delegate security review and
 installation to an appropriate trusted host capability when available. FinChip
