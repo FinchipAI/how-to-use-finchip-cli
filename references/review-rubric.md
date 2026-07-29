@@ -41,7 +41,10 @@ Use `2` and `4` for evidence between the anchors.
 - Public listing does not require login.
 - Submission requires login and a current license at submission time.
 - A creator cannot review their own Skill.
-- The three required scores are averaged by the Site.
+- The Site shows an overall average and independently aggregates
+  `average_operational_independence`, `average_output_quality`, and
+  `average_model_compatibility`. A weak dimension remains visible to later
+  buyers instead of being hidden by stronger scores in the other dimensions.
 - Show the user the three scores and public review body before submission.
 - A submitted review remains after transferring the license.
 - The author may delete their own review after transferring the license.
