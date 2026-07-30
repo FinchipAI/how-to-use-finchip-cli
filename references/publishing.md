@@ -24,6 +24,22 @@ Before publish, confirm:
 FinChip integrity and encryption mechanisms do not certify that published code
 is safe. They preserve or verify the bytes selected by the uploader.
 
+## Describe capability fit
+
+Write metadata so another Agent can decide quickly whether the Skill matches a
+request:
+
+- `--summary` is a short discovery summary, no more than 280 characters. State
+  the problem, expected outcome, and the most important boundary.
+- `--description` is the full capability fit contract. Cover the problem,
+  outcome, what the Skill can do, what it is not for, required inputs, tools,
+  permissions or environment, outputs, limits, external side effects, good
+  matches, and clear non-matches.
+
+Keep the contract concrete and consistent with the package. It is the
+publisher's claim, not FinChip verification of capability, quality, or safety.
+Do not promise broader behavior than the uploaded Skill implements.
+
 ## Choose encryption
 
 Recommend `oracle-v2` for a new encrypted publish, but treat it as guidance, not
@@ -45,19 +61,23 @@ Run a dry run first with explicit metadata:
 finchip skill publish ./my-skill \
   --slug my-skill \
   --name "My Skill" \
-  --description "What this Skill does" \
+  --summary "Explains EVM transactions and flags the main risks; it does not sign or broadcast transactions." \
+  --description "Problem: Raw EVM transaction data is difficult to assess. Outcome: A structured explanation and risk notes. Can: Decode calls and explain likely effects. Not for: Signing, broadcasting, or guaranteeing safety. Requires: Transaction data and chain context. Produces: A human-readable report. Limits: Results depend on supplied data and supported ABIs. Side effects: None. Good matches: Users reviewing a transaction before signing. Not a match: Users asking the Skill to execute the transaction." \
   --category "Dev Environment" \
   --license "MIT" \
-  --version "1.0.0" \
+  --skill-version "1.0.0" \
   --encrypt oracle-v2 \
   --dry-run \
   --json
 ```
 
 Before the confirmed publish, show the final path, slug, chain, price, category,
-license, version, encryption mode, supply, royalty, expected uploads, and
-estimated transaction effect. Publishing can create durable IPFS and on-chain
-state.
+summary, capability fit description, license, Skill version, encryption mode,
+supply, royalty, expected uploads, and estimated transaction effect.
+Publishing can create durable IPFS and on-chain state.
+
+Use `finchip --version` only to inspect the installed CLI version. Never use
+`--version` inside `skill publish`; Skill metadata uses `--skill-version`.
 
 Use `--resume example-skill-finchip` for a saved interrupted publish, replacing
 the example with the slug stored in the publish error. Do not start a second
