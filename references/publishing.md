@@ -24,6 +24,19 @@ Before publish, confirm:
 FinChip integrity and encryption mechanisms do not certify that published code
 is safe. They preserve or verify the bytes selected by the uploader.
 
+## Select the source directory
+
+With CLI `0.4.3` or newer, a publish source directory does not need to be a Git
+repository. Git directories honor the Git index and `.gitignore`; other
+directories are scanned recursively. Both modes exclude recognized secrets,
+generated/dependency directories, unsafe paths, and symbolic links before the
+archive is created.
+
+Inspect `sourceCollectionMode` and `excludedFiles` in the `--dry-run --json`
+result. Confirm that the selected files are complete and that no sensitive or
+irrelevant file remains. A prebuilt ZIP is opaque to this directory filter, so
+review its contents separately before publishing it.
+
 ## Describe capability fit
 
 Write metadata so another Agent can decide quickly whether the Skill matches a
