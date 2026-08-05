@@ -124,17 +124,32 @@ After download, read `integrityLevel`, `verifiedPlaintextSha256`, and
 
 ## Site Agent purchase Tasks
 
-When the Human copies an Acquire instruction from the Site, run it without a
-confirmation flag:
+After an Agent-logged-in Human clicks "Send to my Agent" on the Site, inspect
+the wallet-bound Task Inbox:
 
 ```bash
-finchip task run 'https://finchip.ai/agent-tasks/...#claim=...'
+finchip task list --status pending --json
 ```
 
-This claims the wallet-bound Intent, reloads canonical deployment and on-chain
-state, simulates the purchase, enforces price and gas caps, and stops at
-`awaiting_approval`. Show the Human the complete returned plan and plan hash.
-Do not shorten it to a generic "buy?" question.
+The business Task does not use a copied URL or claim secret. Match the Human's
+request to one exact Task ID. When more than one Task is pending, show the
+identifying Skill and limits and ask the Human which one they mean; never
+silently choose the newest Task. Then claim only that ID:
+
+```bash
+finchip task claim 00000000-0000-4000-8000-000000000000 --json
+```
+
+Use the real ID returned by `task list`. Claiming reloads canonical deployment
+and on-chain state, simulates the purchase, enforces price and gas caps, and
+stops at `awaiting_approval`. Show the Human the complete returned plan and
+plan hash. Do not shorten it to a generic "buy?" question.
+
+The Site may temporarily retain a claim secret for compatibility with an older
+copied business Task URL. Do not request, expose, or invent that secret for the
+Inbox flow: authenticated `task claim <id>` is the canonical path. If any JSON
+command includes `warnings[]`, follow the `CLI_UPDATE_REQUIRED` and
+`CLI_UPDATE_AVAILABLE` rules in `SKILL.md` before continuing.
 
 After the Human explicitly approves that exact plan:
 
@@ -203,7 +218,7 @@ Never automatically repeat a broadcast after a timeout or
 | --- | --- | --- |
 | Read-only | list, search, show, library, review list, wallet status | Run when it directly serves the request. |
 | Session | login, logout, login Task, site open | Explain wallet and exact Site origin; require the local confirmation page for a new login or browser handoff. |
-| Agent plan | task run, task show/list/resume without `--yes`, task deny | Run read-only preflight, show the exact plan, and stop for explicit approval. |
+| Agent plan | task list/claim, task run for login, task show/resume without `--yes`, task deny | Run read-only Inbox discovery or preflight, show the exact plan, and stop for explicit approval. |
 | Agent broadcast | task resume with `--yes` | Use only after explicit approval of the unchanged plan; after `broadcasting`, all recovery is query-only. |
 | Public/Site mutation | review submit/delete, manage updates, uploads | Show the material public change before sending it. |
 | Chain/IPFS | publish, acquire, trade, attest, on-chain price changes | Preflight when available; show chain, contract, value, gas, and irreversible effects. |
