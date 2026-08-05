@@ -34,6 +34,19 @@ finchip --version
   `finchip ... --help` before relying on documented flags. Do not perform a
   mutation or transaction until the current command contract is understood.
 
+CLI 0.5.2 and newer can also return a version-policy warning on any command.
+For `--json`, inspect the additive `warnings[]` field without treating it as
+the command result:
+
+- `CLI_UPDATE_REQUIRED`: stop before Site-backed authentication, mutation, or
+  transaction work; ask for approval to run the official update command.
+- `CLI_UPDATE_AVAILABLE`: tell the user an update is recommended and prefer to
+  update before the next mutation or transaction. Read-only work may continue.
+
+Never interpret either warning as permission to install automatically. The CLI
+checks a cached official Site policy and does not require every command to make
+a network request.
+
 Prefer `--json` for Agent workflows. Parse stable `code` fields rather than
 matching prose.
 
@@ -80,11 +93,14 @@ material target and effect. Use the command's actual `--dry-run`, limit, and
 confirmation flags when available; never invent a `--yes` flag for a command
 that does not provide one.
 
-For a Site Agent Task, first run the Task without `--yes`. Show the exact plan,
-including Skill, wallet, chain, contract, price, maximum gas fee, and plan hash.
+For a Site Agent purchase Task, first list the pending wallet-bound Inbox and
+claim the exact Task ID the Human intends. If multiple Tasks are pending, do
+not assume the newest one; ask the Human to identify the intended Task. Show
+the exact dry-run plan, including Skill, wallet, chain, contract, price,
+maximum gas fee, and plan hash.
 Only after the Human explicitly approves that plan may you run
 `finchip task resume <task-id> --yes`. Do not infer approval from funding,
-prior purchases, or the fact that the Human pasted the Task instruction.
+prior purchases, or the fact that the Human asked to finish a pending purchase.
 
 After a transaction has been broadcast, do not blindly retry an uncertain
 result. Preserve the slug, chain, contract, transaction hash, and error code,
