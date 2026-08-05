@@ -1,12 +1,12 @@
 {
   "instructionName": "use-finchip-cli",
-  "instructionVersion": "0.2.4",
+  "instructionVersion": "0.3.0",
   "validatedCliVersions": [
-    "0.4.3"
+    "0.5.0"
   ],
-  "supportedCliRange": ">=0.4.3 <0.5.0",
+  "supportedCliRange": ">=0.5.0 <0.6.0",
   "nodeRange": ">=22.0.0",
   "cliPackage": "finchip-cli",
-  "cliRelease": "https://github.com/Sleipnirs/finchip-cli/releases/tag/v0.4.3",
+  "cliRelease": "https://github.com/Sleipnirs/finchip-cli/releases/tag/v0.5.0",
   "policy": "Tag each instruction release with the matching instructionVersion and update this file whenever its CLI command contract changes."
 }
