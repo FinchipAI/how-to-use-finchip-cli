@@ -122,28 +122,54 @@ Before acquisition:
 After download, read `integrityLevel`, `verifiedPlaintextSha256`, and
 `outputSha256`. Do not install or execute the result as part of this workflow.
 
-## Site Agent purchase Tasks
+## Site Agent business Tasks
 
-After an Agent-logged-in Human clicks "Send to my Agent" on the Site, inspect
+Require FinChip CLI 0.6.1 or a compatible later release before listing,
+claiming, or resuming these Tasks. CLI 0.6.0 must not execute Action Intents.
+If an earlier attempt may have broadcast a transaction, inspect chain and Site
+state; never retry it solely because the Task lacks a transaction hash.
+
+After an Agent-logged-in Human clicks "Send to Agent" on the Site, inspect
 the wallet-bound Task Inbox:
 
 ```bash
 finchip task list --status pending --json
 ```
 
-The business Task does not use a copied URL or claim secret. Match the Human's
-request to one exact Task ID. When more than one Task is pending, show the
-identifying Skill and limits and ask the Human which one they mean; never
-silently choose the newest Task. Then claim only that ID:
+The business Task does not require a copied URL or claim secret. It may be an
+acquisition, reveal/download, publish, price update, Creator Attestation, Trade
+listing, Trade purchase, or Trade cancellation. Match the Human's request to
+one exact Task ID. When more than one Task is pending, show the action,
+identifying Skill or listing, and limits and ask the Human which one they mean;
+never silently choose the newest Task. Then claim only that ID:
 
 ```bash
 finchip task claim 00000000-0000-4000-8000-000000000000 --json
 ```
 
 Use the real ID returned by `task list`. Claiming reloads canonical deployment
-and on-chain state, simulates the purchase, enforces price and gas caps, and
-stops at `awaiting_approval`. Show the Human the complete returned plan and
-plan hash. Do not shorten it to a generic "buy?" question.
+and on-chain state, prepares the action-specific plan, enforces value and gas
+caps, and stops at `awaiting_approval`. Show the Human the complete ordered
+plan and plan hash. Do not shorten it to a generic confirmation question.
+
+For a publish Task, the Site does not send a local source path to the CLI. Ask
+the Human for the intended local file or directory and claim with the exact
+path:
+
+```bash
+finchip task claim 00000000-0000-4000-8000-000000000000 --source 'C:\path\to\skill' --json
+```
+
+The CLI saves that path only in its private local Task record. The dry run must
+list the selected and excluded files and simulate deployment without uploading,
+signing, or broadcasting. Never infer a source path from Site metadata, and do
+not continue when the source differs from the Human's intended package.
+
+For a reveal/download Task, one unchanged-plan approval covers authorization,
+download, decryption, integrity verification, and saving. The dry run must list
+the manifest files first. Save by default under `Downloads/FinChip/<slug>`, do
+not overwrite an existing output, and report safe ZIP entry names after local
+decryption. Do not extract, install, or execute the package.
 
 The Site may temporarily retain a claim secret for compatibility with an older
 copied business Task URL. Do not request, expose, or invent that secret for the
@@ -159,8 +185,10 @@ finchip task resume 00000000-0000-4000-8000-000000000000 --yes
 
 Use the real Task ID returned by the CLI. The command re-runs preflight. If any
 material field changed it writes a new plan and stops for approval again. Once
-the Site records `broadcasting`, every later resume is query-only and must
-never call `writeContract` again.
+the Site records execution or a broadcast, later recovery is conservative. For
+`broadcasting`, `broadcast`, `executing`, `recovery_required`, or
+`result_unknown`, inspect and report state; never repeat a wallet operation or
+chain transaction merely because the prior command stopped.
 
 Use these recovery commands as needed, substituting the real returned Task ID:
 
@@ -173,8 +201,10 @@ finchip task deny 00000000-0000-4000-8000-000000000000 --json
 
 For `broadcast`, `broadcasting`, or `result_unknown`, report the Site state and
 transaction hash when known. Do not approve, sign, broadcast, or retry again.
-The Site independently verifies the receipt and resulting holding. A receipt
-with a revert becomes terminal `failed` and is not retry-safe.
+The Site independently verifies chain-step receipts and expected calls. A
+receipt with a revert becomes terminal `failed` and is not retry-safe. A later
+Site or local step failure can become `recovery_required`; report it rather
+than bypassing the Task with a standalone command.
 
 ## Creator management
 
@@ -184,6 +214,11 @@ creator-only state.
 
 Creator attestation is a separate, one-time on-chain action. It is not implied
 by publish or manage.
+
+Accounts signed in through Agent CLI cannot create or manage Studio. Explain
+that Studio management currently requires signing in with a browser wallet;
+ordinary marketplace acquisition and the Agent Task workflows remain
+available.
 
 ## Reviews
 
@@ -218,7 +253,7 @@ Never automatically repeat a broadcast after a timeout or
 | --- | --- | --- |
 | Read-only | list, search, show, library, review list, wallet status | Run when it directly serves the request. |
 | Session | login, logout, login Task, site open | Explain wallet and exact Site origin; require the local confirmation page for a new login or browser handoff. |
-| Agent plan | task list/claim, task run for login, task show/resume without `--yes`, task deny | Run read-only Inbox discovery or preflight, show the exact plan, and stop for explicit approval. |
-| Agent broadcast | task resume with `--yes` | Use only after explicit approval of the unchanged plan; after `broadcasting`, all recovery is query-only. |
+| Agent plan | task list/claim, task run for login, task show/resume without `--yes`, task deny | Run Inbox discovery or dry-run preparation, show the exact plan, and stop for explicit approval. Publish claim also needs the Human-provided `--source` path. |
+| Agent execution | task resume with `--yes` | Use only after explicit approval of the unchanged plan. Do not retry an executing, recovery-required, broadcast, or uncertain Task by bypassing the Task. |
 | Public/Site mutation | review submit/delete, manage updates, uploads | Show the material public change before sending it. |
 | Chain/IPFS | publish, acquire, trade, attest, on-chain price changes | Preflight when available; show chain, contract, value, gas, and irreversible effects. |

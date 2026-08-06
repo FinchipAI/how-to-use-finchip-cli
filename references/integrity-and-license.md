@@ -11,6 +11,12 @@
 Integrity is not a malware or quality verdict. Send downloaded content through
 an appropriate host security-review capability before use or installation.
 
+For a Site reveal/download Task, treat reveal and download as one approved
+operation. Review the manifest file list during dry-run, then let the CLI
+authorize, download, decrypt, verify, and save after the Human approves the
+unchanged plan. Report package entry names, but never extract, install, or
+execute the archive as part of the Task.
+
 ## Verify and explain Creator Attestation
 
 For stronger provenance, use read-only EVM/RPC tooling against the exact

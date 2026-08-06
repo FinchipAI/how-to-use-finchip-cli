@@ -68,6 +68,17 @@ using Lit.
 
 ## Publish
 
+When the Human started publishing from an Agent-logged-in Site session, use the
+wallet-bound Task flow instead of the standalone command. Obtain the intended
+local source path from the Human, then run `finchip task claim <task-id>
+--source <path> --json`. Review the exact source file list and ordered publish
+steps, obtain explicit approval, and run `finchip task resume <task-id> --yes`.
+The Site draft contains immutable publish metadata, not authority to choose or
+read a local source path.
+
+For a browser-wallet session, or when the Human explicitly asks for a
+standalone CLI publish, use the direct workflow below.
+
 Run a dry run first with explicit metadata:
 
 ```bash
