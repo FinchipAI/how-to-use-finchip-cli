@@ -47,6 +47,12 @@ Never interpret either warning as permission to install automatically. The CLI
 checks a cached official Site policy and does not require every command to make
 a network request.
 
+Do not use CLI 0.6.0 to claim or resume any Site Agent business Task. That
+release can broadcast an Acquire transaction without preserving its hash in
+the Task. Upgrade to 0.6.1 or a compatible later release before Action Intent
+work, and never retry an already-broadcast transaction merely to repair Site
+state.
+
 Prefer `--json` for Agent workflows. Parse stable `code` fields rather than
 matching prose.
 
@@ -93,14 +99,15 @@ material target and effect. Use the command's actual `--dry-run`, limit, and
 confirmation flags when available; never invent a `--yes` flag for a command
 that does not provide one.
 
-For a Site Agent purchase Task, first list the pending wallet-bound Inbox and
+For a Site Agent business Task, first list the pending wallet-bound Inbox and
 claim the exact Task ID the Human intends. If multiple Tasks are pending, do
 not assume the newest one; ask the Human to identify the intended Task. Show
-the exact dry-run plan, including Skill, wallet, chain, contract, price,
-maximum gas fee, and plan hash.
+the exact dry-run plan, including the action, Skill, wallet, chain, contract,
+value or price limits, maximum gas fee, ordered steps, file list when relevant,
+and plan hash.
 Only after the Human explicitly approves that plan may you run
 `finchip task resume <task-id> --yes`. Do not infer approval from funding,
-prior purchases, or the fact that the Human asked to finish a pending purchase.
+prior actions, or the fact that the Human asked to finish a pending Task.
 
 After a transaction has been broadcast, do not blindly retry an uncertain
 result. Preserve the slug, chain, contract, transaction hash, and error code,
