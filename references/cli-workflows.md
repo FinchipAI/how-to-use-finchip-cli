@@ -212,7 +212,7 @@ Use `finchip skill manage get example-skill-finchip --json` before applying decl
 changes. Keep `skill show` for public detail and `skill manage get` for
 creator-only state.
 
-For the split Information/Instruction contract, require CLI 0.6.2 or newer.
+For the split Information/Instruction contract, require CLI 0.7.0 or newer.
 Start from the returned `editable` object instead of inventing fields. Keep
 buyer-facing facts in `informationOverrides`:
 
