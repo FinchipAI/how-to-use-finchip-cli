@@ -233,6 +233,11 @@ the existing editable state first so omitted required fields already exist.
 Preview the exact declarative patch with `--dry-run`, show the material public
 change, then request approval before the real apply.
 
+Treat `INSTRUCTION_REQUIRED_FIELDS_MISSING` as a request to restore the three
+required Instruction fields before retrying. Treat `MANAGE_CONTENT_INVALID` as
+invalid field shape, type, count, or length and correct the declarative input.
+These are stable CLI `code` values; do not parse the accompanying prose.
+
 If apply returns `MANAGE_CONTRACT_UNSUPPORTED`, no PATCH was sent and
 `mutationApplied` is false. Upgrade/deploy the Site contract before retrying;
 do not remove new fields and claim that the requested update succeeded. For
