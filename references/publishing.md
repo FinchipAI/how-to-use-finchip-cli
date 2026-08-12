@@ -53,6 +53,13 @@ Keep the contract concrete and consistent with the package. It is the
 publisher's claim, not FinChip verification of capability, quality, or safety.
 Do not promise broader behavior than the uploaded Skill implements.
 
+After publishing, use the split Manage contract for richer details. Put
+buyer-facing discovery and compatibility facts in `informationOverrides`, and
+put executable usage guidance in `instructionOverrides`. Do not add a new
+Instruction `audience`; that field is retained only for legacy rows. Any
+changed Instruction must retain concrete steps plus a prompt and output
+example.
+
 ## Choose encryption
 
 Recommend `oracle-v2` for a new encrypted publish, but treat it as guidance, not
