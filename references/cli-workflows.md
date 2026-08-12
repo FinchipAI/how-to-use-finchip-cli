@@ -212,6 +212,38 @@ Use `finchip skill manage get example-skill-finchip --json` before applying decl
 changes. Keep `skill show` for public detail and `skill manage get` for
 creator-only state.
 
+For the split Information/Instruction contract, require CLI 0.7.0 or newer.
+Start from the returned `editable` object instead of inventing fields. Keep
+buyer-facing facts in `informationOverrides`:
+
+- `capabilities`, `useCases`, `audience`, `testedModels`
+- `releaseNotes`, `purchaseBenefits`
+- `requiresApiKey`, `networkAccess`, `pythonVersion`, `nodeVersion`
+
+Keep operational directions in `instructionOverrides`:
+
+- `prerequisites`, `steps`, `examplePrompt`, `exampleOutput`
+- `parameters`, `troubleshooting`, `knownLimitations`
+- legacy `runtime`; preserve legacy `audience` if it is already present, but
+  place new audience descriptions in Information
+
+An Instruction change must leave non-empty `steps`, `examplePrompt`, and
+`exampleOutput` in the merged Site state. A partial file is allowed, but inspect
+the existing editable state first so omitted required fields already exist.
+Preview the exact declarative patch with `--dry-run`, show the material public
+change, then request approval before the real apply.
+
+Treat `INSTRUCTION_REQUIRED_FIELDS_MISSING` as a request to restore the three
+required Instruction fields before retrying. Treat `MANAGE_CONTENT_INVALID` as
+invalid field shape, type, count, or length and correct the declarative input.
+These are stable CLI `code` values; do not parse the accompanying prose.
+
+If apply returns `MANAGE_CONTRACT_UNSUPPORTED`, no PATCH was sent and
+`mutationApplied` is false. Upgrade/deploy the Site contract before retrying;
+do not remove new fields and claim that the requested update succeeded. For
+`MANAGE_RESULT_UNKNOWN` or `MANAGE_VERIFICATION_FAILED`, inspect with
+`skill manage get`; do not automatically repeat the mutation.
+
 Creator attestation is a separate, one-time on-chain action. It is not implied
 by publish or manage.
 

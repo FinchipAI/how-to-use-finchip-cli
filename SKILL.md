@@ -53,6 +53,11 @@ the Task. Upgrade to 0.6.1 or a compatible later release before Action Intent
 work, and never retry an already-broadcast transaction merely to repair Site
 state.
 
+Use CLI 0.7.0 or newer for the split Skill Information/Instruction Manage
+contract. Older CLI versions reject the new fields. A 0.7.0+ CLI also stops
+before mutation with `MANAGE_CONTRACT_UNSUPPORTED` when the connected Site has
+not deployed that contract; never treat that result as a successful update.
+
 Prefer `--json` for Agent workflows. Parse stable `code` fields rather than
 matching prose.
 
